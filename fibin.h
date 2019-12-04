@@ -5,6 +5,7 @@
 template <typename ValueType, bool IsNumeric = 
 		(std::is_integral<ValueType>::value && !std::is_same<ValueType, bool>::value)>
 class Fibin {
+public:
 	template <typename Expr>
 	static constexpr ValueType eval() {
 		return Expr::template eval<ValueType>();
@@ -13,6 +14,7 @@ class Fibin {
 
 template <typename ValueType>
 class Fibin <ValueType, false> {
+public:
 	template <typename Expr>
 	static constexpr void eval() {
         std::cout << "Fibin doesn't support: " << typeid(ValueType).name() << std::endl;
@@ -21,6 +23,7 @@ class Fibin <ValueType, false> {
 
 template <typename Left, typename Right>
 class Eq {
+public:
 	template <typename ValueType>
 	static constexpr bool eval() {
 		static_assert(std::is_same<ValueType, bool>::value, "Binary method with nonbinary return type");
@@ -30,6 +33,7 @@ class Eq {
 
 template <int n>
 class Lit {
+public:
 	template <typename ValueType>
 	static constexpr ValueType eval() {
 		static_assert(!std::is_same<ValueType, bool>::value, "Nonbinary method with binary return type");
@@ -41,6 +45,7 @@ class Lit {
 
 template <>
 class Lit<false> {
+public:
 	template <typename ValueType>
 	static constexpr ValueType eval() {
 		static_assert(std::is_same<ValueType, bool>::value, "Binary method with nonbool return type");
@@ -50,6 +55,7 @@ class Lit<false> {
 
 template <>
 class Lit<true> {
+public:
 	template <typename ValueType>
 	static constexpr ValueType eval() {
 		static_assert(std::is_same<ValueType, bool>::value, "Binary method with nonbool return type");
@@ -59,6 +65,7 @@ class Lit<true> {
 
 template <typename Condition, typename Then, typename Else>
 class If {
+public:
 	template <typename ValueType>
 	static constexpr ValueType eval() {
 		if (Condition::template eval<bool>())
@@ -70,6 +77,7 @@ class If {
 
 template<typename E1, typename E2, typename... Args>
 class Sum {
+public:
 	template <typename ValueType>
 	static constexpr ValueType eval() {
 		return E1::template eval<ValueType>() + Sum<E2, Args...>::template eval<ValueType>();
@@ -78,6 +86,7 @@ class Sum {
 
 template<typename E1, typename E2>
 class Sum<E1, E2> {
+public:
 	template <typename ValueType>
 	static constexpr ValueType eval() {
 		return E1::template eval<ValueType>() + E2::template eval<ValueType>();
