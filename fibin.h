@@ -1,5 +1,5 @@
-#ifndef UNTITLED1_FIBIN_H
-#define UNTITLED1_FIBIN_H
+#ifndef FIBIN_H
+#define FIBIN_H
 
 #include <iostream>
 #include <type_traits>
@@ -31,14 +31,6 @@ struct ContextType{
 		else
 			return Tail::template eval<ValueType, name, FullContext, Arglist>();
 	}
-
-	/*template <typename ValueType, uint64_t name, typename Argument, typename FullContext>
-	static constexpr ValueType evalFunction() {
-		if constexpr (name == Name1)
-			return Value1::template evalFunction<ValueType, Argument, FullContext>();
-		else
-			return Tail::template evalFunction<ValueType, name, Argument, FullContext>();
-	}*/
 };
 
 template <typename ValueType, bool IsNumeric =
@@ -62,7 +54,6 @@ template <typename Left, typename Right>
 struct Eq {
 	template <typename ValueType, typename Context, typename Arglist>
 	static constexpr bool eval() {
-		//static_assert(std::is_same<ValueType, bool>::value, "Eq returns True/False, not a number");
 		return Left::template eval<ValueType, Context, Arglist>() == Right::template eval<ValueType, Context, Arglist>();
 	}
 };
@@ -97,7 +88,6 @@ template <>
 struct Lit<False> {
 	template <typename ValueType, typename Context = EmptyContext, typename Arglist = EmptyArglist>
 	static constexpr ValueType eval() {
-		//static_assert(std::is_same<ValueType, bool>::value, "False is not a number");
 		return false;
 	}
 };
@@ -106,7 +96,6 @@ template <>
 struct Lit<True> {
 	template <typename ValueType, typename Context = EmptyContext, typename Arglist = EmptyArglist>
 	static constexpr ValueType eval() {
-		//static_assert(std::is_same<ValueType, bool>::value, "True is not a number");
 		return true;
 	}
 };
@@ -120,13 +109,6 @@ struct If {
 		else
 			return Else::template eval<ValueType, Context, Arglist>();
 	}
-	/*template <typename ValueType, typename Argument, typename Context>
-	static constexpr ValueType evalFunction() {
-		if constexpr (Condition::template eval<bool, Context>())
-			return Then::template evalFunction<ValueType, Argument, Context>();
-		else
-			return Else::template evalFunction<ValueType, Argument, Context>();
-	}*/
 };
 
 template<typename E1, typename E2, typename... Args>
@@ -167,10 +149,6 @@ struct Ref {
 	static constexpr ValueType eval() {
 		return Context::template eval<ValueType, id, Context, Arglist>();
 	}
-	/*template <typename ValueType, typename Argument, typename Context>
-	static constexpr ValueType evalFunction() {
-		return Context::template evalFunction<ValueType, id, Argument, Context, Arglist>();
-	}*/
 };
 
 template<uint64_t id, typename Value, typename Expression>
@@ -179,10 +157,6 @@ struct Let {
 	static constexpr ValueType eval() {
 		return Expression::template eval<ValueType, ContextType<id, Value, Context>, Arglist>();
 	}
-	/*template <typename ValueType, typename Argument, typename Context>
-	static constexpr ValueType evalFunction() {
-		return Expression::template evalFunction<ValueType, Argument, ContextType<id, Value, Context>>();
-	}*/
 };
 
 template <uint64_t id, typename Body>
@@ -191,11 +165,6 @@ struct Lambda {
 	static constexpr ValueType eval() {
 		return Arglist::template eval<ValueType, id, Body, Context>();
 	}
-
-	/*template <typename ValueType, typename Argument, typename Context>
-	static constexpr ValueType evalFunction() {
-		return Body::template eval<ValueType, ContextType<id, Argument, Context>>();
-	}*/
 };
 
 template <typename Arg1, typename Tail>
@@ -208,11 +177,10 @@ struct ArglistType {
 
 template <typename Fun, typename Param>
 struct Invoke {
-	template <typename ValueType, typename Context, typename Arglist>
+	template <typename ValueType, typename Constext, typename Arglist>
 	static constexpr ValueType eval() {
 		return Fun::template eval<ValueType, Context, ArglistType<Param, Arglist>>();
-		//return Fun::template evalFunction<ValueType, Param, Context>();
 	}
 };
 
-#endif //UNTITLED1_FIBIN_H
+#endif //FIBIN_H
